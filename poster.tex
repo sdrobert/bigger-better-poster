@@ -1,0 +1,337 @@
+% !TEX engine = pdflatex
+
+\documentclass[
+  gradient, landscape,
+  style=bow,
+  logo=figs/05_Uniligual_FullColour_Horizontal.eps,
+]{utposter}
+
+\usepackage{mathtools}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{multirow}
+\geometry{paperwidth=36in,paperheight=48in}
+
+\def\rot#1{\rotatebox{90}{#1}}
+
+% \makeatletter
+% \input{fonts/fontfile26pt.clo}
+% \makeatother
+
+\title{\uoftheader{Bigger is Not Always Better: The Effect of Context Size on Speech Pre-Training}}
+\institute{University of Toronto}
+\author{Sean Robertson, Ewan Dunbar}
+\email{sdrobert@cs.toronto.edu,ewan.dunbar@utoronto.ca}
+
+\begin{document}
+
+\maketitle[width=.5\textwidth]
+
+\begin{columns}
+
+\column{0.33}
+
+\block{\uoftheader{Motivations}}{%
+  \begin{enumerate}
+    \item \textbf{Ecological validity}
+          \begin{itemize}
+            \item Computer-Assisted Pronunciation Training (CAPT) systems often
+                  start with Automatic Speech Recognition (ASR)
+            \item Non-native ASR difficult
+            \item CAPT training commonly uses clean, read-and-record data
+            \item Read-and-record $\neq$ participating in CAPT
+            \item FAB data more applicable to downstream task $\to$ better
+                  training
+          \end{itemize}
+    \item \textbf{Teacher-driven labels}
+          \begin{itemize}
+            \item CAPT systems rely on intrinsic criterion
+                  of \textit{nativeness}
+                  \begin{itemize}
+                    \item Easy for engineers: more native $\approx$ more
+                          probable under ASR
+                    \item Problematic for educators: \textit{which} native?
+                          ``Good enough?''
+                  \end{itemize}
+            \item Solution: assume teacher knows best and mimic her feedback
+            \item FAB provides both intrinsic (nativeness) and extrinsic
+                  (teacher feedback) binary label sets
+          \end{itemize}
+    \item \textbf{Absolute beginner learners}
+          \begin{itemize}
+            \item Pronunciation training more impactful to beginner and
+                  intermediate learners than advanced ones (Mahdi and Al
+                  Khateeb, 2019)
+            \item Absolute (L2) beginners overlooked in existing corpora
+            \item FAB is the first corpus built from absolute beginner
+                  learners' speech
+          \end{itemize}
+  \end{enumerate}
+}
+
+\block{\uoftheader{Overview and collection}}{%
+  %
+  \begin{center}
+    \begin{tabular}{| r || l |}
+      \hline
+      Speakers                & 121 \\ \hline
+      Segmented utterances    & approx. 9000 \\ \hline
+      Word segments           & approx. 25000 \\ \hline
+      Binary labels           & approx. 17000 \\ \hline
+      Word segment duration   & approx. 3 hours \\ \hline
+      % Recording format        & 16kHz PCM16 mono WAV \\ \hline
+      % Transcription format    & \textit{CTM}, \textit{TextGrid},
+      %                           \textit{Transcriber} \\ \hline
+    \end{tabular}
+  \end{center}
+
+  \begin{itemize}
+    \item Collected over two experiments at University of Toronto
+    \item English-speaking participants knew little-to-no French
+    \item Paired role-play tasks, consistent with task-based pedagogy (Skehan,
+          2003)
+    \item Dialogue modelled by video
+    \item Participants rehearsed dialogue with small contextual changes
+    \item Participants took turns speaking into iPad app
+    \item App gave feedback, including accept/reject utterance
+    \item App actually controlled by expert in language learning
+    \item Beginners $+$ recall $+$ contextual inference $=$ very messy data!
+    \item Data from first experiment in minimal feedback partition; second in
+          explicit and read-and-record partitions
+    \item Nativeness labels in minimal feedback partition; teacher feedback
+          labels in explicit feedback partition
+  \end{itemize}
+}
+
+\column{0.33}
+
+\block{\uoftheader{Minimal feedback partition}}{%
+  %
+  \begin{center}
+    \begin{tabular}{| r || l |}
+      \hline
+      Speakers                        & 58 \\ \hline
+      Segmented utterances            & approx. 4000 \\ \hline
+      Word segments                   & approx. 12000 \\ \hline
+      More/less native labels         & 5767 \\ \hline
+      % First language                  & English(26), Portuguese(13),
+      %                                   Mandarin(4), Cantonese(4) \\ \hline
+      Fluency in French (1-5 asc.)    & 1(52), 2(8), 3(3) \\ \hline
+      % French experience               & None(16), Formal(16),
+      %                                   Incomplete(4), Informal(3) \\ \hline
+      % Median age                      & 23 \\ \hline
+      % Gender                          & Female(30), Male(28) \\ \hline
+      % Number languages fluent         & 2(26), 1(19), 3(11) \\ \hline
+    \end{tabular}
+    \hfil
+    \begin{tabular}{| r || c | c |}
+      \hline
+      ann. & $\kappa_1$ & $\kappa_2$ (no.) \\ %& more & less & contr. & prop. \\
+      \hline \hline
+      A & .16 & .48(168) \\ \hline %& .23 & .36 & .12 & .55 \\ \hline %corinne
+      B & .20 & .52(184) \\ \hline %& .29 & .41 & .9 & .10 \\ \hline %mei
+      C & .17 & .50(174) \\ \hline %& .29 & .37 & .13 & .10 \\ \hline %celine
+      D & .16 & .51(154) \\ \hline %& .31 & .23 & .14 & .25 \\ \hline %mimi
+   \end{tabular}
+  \end{center}
+
+  \begin{itemize}
+    \item Collected in first experiment (Robertson et al, 2016)
+    \item App feedback limited to accepting/rejecting utterances
+    \item More/less native word labels extracted by bucketed pairwise comparisons
+          %
+          \begin{itemize}
+            \item Four expert annotators compared pairs, winner the ``more
+                  native'' of two
+            \item 10 instances fully ranked counting wins, choose
+                  4\textsuperscript{th} and 6\textsuperscript{th} as boundaries
+            \item New word loses against both boundaries assigned ``less
+                  native'' label; if it wins both, it is assigned ``more
+                  native'' label
+            \item Inter-annotator agreement in above table; $\kappa_1$ is
+                  Cohen's Kappa including one-win-one-loss words; $\kappa_2$
+                  only win-win or loss-loss
+          \end{itemize}
+  \end{itemize}
+}
+
+\block{\uoftheader{Explicit feedback parition}}{%
+  %
+  \begin{center}
+    \begin{tabular}{| r || l |}
+      \hline
+      Speakers                        & 63 \\ \hline
+      Segmented utterances            & approx. 5000 \\ \hline
+      Word segments                   & approx. 13000 \\ \hline
+      Correct/mispronounced labels    & approx. 12000 \\ \hline
+      % First language                  & English(28), Mandarin(7),
+      %                                   Chinese\textsuperscript{*}(9),
+      %                                   Cantonese(3), Russian(3),
+      %                                   Spanish(2), Vietnamese(2),
+      %                                   Farsi(2), Korean(2),
+      %                                   Hindi(2), Malayalam(2) \\ \hline
+      Fluency in French (1-5 asc.)    & 1(59), 2(4) \\ \hline
+      % French experience               & None(37), Informal(8), Full(4)
+      %                                   \\ \hline
+      % Median age                      & 23 \\ \hline
+      % Gender                          & Female(32), Male(31) \\ \hline
+      % Number languages fluent         & 2(36), 3(14), 1(12) \\ \hline
+    \end{tabular}
+    %
+  \end{center}
+
+  \begin{itemize}
+    \item Collected in second experiment (Robertson et al, 2018)
+    \item Word-level feedback in addition to accept/reject: insertions,
+          deletions, mispronunciations, and \textit{recast} recordings
+    \item Expert feedback replaced with automated feedback in experimental
+          condition. See \textit{Challenges} section for results.
+    \item Correct/mispronounced labels extracted from teacher feedback
+  \end{itemize}
+}
+
+\block{\uoftheader{Read-and-record partition}}{%
+  %
+  \begin{center}
+    \begin{tabular}{| r || l |}
+      \hline
+      Speakers                        & 19 \\ \hline
+      Segmented utterances            & approx. 600 \\ \hline
+      Word segments                   & approx. 2000 \\ \hline
+      % Word segment duration           & 0.28 hours \\ \hline
+      % Total segments                  & 3686 \\ \hline
+      % First language                  & English(8), Mandarin(3) \\ \hline
+      Fluency in French (1-5 asc.)    & 1(18), 2(1) \\ \hline
+      % French experience               & None(7), Informal(4),
+      %                                   Formal(2) \\ \hline
+      % Median age                      & 23 \\ \hline
+      % Gender                          & Male(11), Female(8) \\ \hline
+      % Number languages fluent         & 2(11), 1(5), 3(3) \\ \hline
+    \end{tabular}
+  \end{center}
+
+  \begin{itemize}
+    \item Collected \textit{after} second experiment, time-permitting
+    \item Participants read aloud and recorded as many utterances as possible
+    \item Prompts were chosen for phonemic diversity
+  \end{itemize}
+}
+
+\note[width=.20\linewidth,targetoffsety=-3.5in,targetoffsetx=-0.01\linewidth]{
+  \large
+  \textbf{Freely avaliable} this year on U. of T.'s \textit{Dataverse}: \\
+  \url{https://dataverse.scholarsportal.info/dataverse/toronto}
+}
+
+\usenotestyle{Empty}
+
+\note[width=.10\linewidth,targetoffsety=-6in,targetoffsetx=-0.15\linewidth]{
+  \tiny
+  This research was funded by an Ontario Centres of Excellence Technical
+  Problem Solving grant in partnership with Speax Inc., and a Canada Graduate
+  Scholarship from the Natural Sciences and Engineering Research Council of
+  Canada.
+}
+
+\column{0.33}
+
+\block{\uoftheader{Results}}{%
+  \begin{itemize}
+    \item Performed on nativeness labels with manual word alignments
+    \item Pronunciation Error Detectors (PEDs) classify words as (non-)native:
+          \begin{itemize}
+            \item Goodness of Pronunciation (GOP, Witt and Young, 2000):
+                  empirically-tuned threshold of
+                  \begin{equation*}
+                    \log P_{\textrm{native}}(\textrm{expected words}|\textrm{audio}) -
+                    \max_{\text{any words}}
+                      \log P_{\textrm{native}}(\textrm{any words}|\textrm{audio})
+                  \end{equation*}
+            \item Four based on GMMs trained on audio segments (Franco et al,
+                  2014):
+                  \begin{itemize}
+                    \item GMM1: two separately-trained GMMs per word, native vs.
+                          non-native, with empirically-tuned threshold of
+                          \begin{equation*}
+                            \log P_{\textrm{word+native}}(\textrm{audio segment}) -
+                            \log P_{\textrm{word+non-native}}(\textrm{audio segment})
+                          \end{equation*}
+                    \item GMM2: same as GMM1, but GMMs MAP-adapted to
+                          Universal Background Model (UBM)
+                    \item GMM3: UBM MAP-adapted to each word instance $\to$
+                          extract GMM supervectors $\to$ linear SVM classifier
+                          on supervectors
+                    \item GMM4: linear combination of GMM2 $+$ GMM3
+                  \end{itemize}
+          \end{itemize}
+    \item Average 4-fold cross-validation with 3 partitioning strategies:
+          split by annotator (4FA); split by participant (4FP); split to
+          stratify database (4FS)
+  \end{itemize}
+  %
+  \begin{center}
+    \begin{tabular}{| r || c | c | c | c | c | c |}
+      \hline
+      \multirow{2}{*}{PED} & \multicolumn{2}{| c |}{4FA} & \multicolumn{2}{ c |}{4FP}
+        & \multicolumn{2}{ c |}{4FS} \\
+        &  Accuracy & $\kappa$ &  Accuracy & $\kappa$ &  Accuracy & $\kappa$ \\
+      \hline \hline
+      GOP &     62\% & .23      &     63\% & .25      &     63\% & .24      \\ \hline
+      GMM1&     63\% & .23      &     63\% & .25      &     66\% & .31      \\ \hline
+      GMM2&{\bf 68\%}&{\bf.34  }&{\bf 66\%}&{\bf.31  }&{\bf 71\%}&{\bf .41 }\\ \hline
+      GMM3&     65\% & .27      &     62\% & .23      &     67\% & .33      \\ \hline
+      GMM4&     64\% & .27      &     65\% & .29      &     70\% & .38      \\ \hline
+    \end{tabular}
+
+    {\small Results tuned on test set. See Robertson et al., 2016 for untuned.}
+  \end{center}
+  %
+}
+
+\block{\uoftheader{Challenges}}{%
+  %
+  \begin{minipage}{0.20\columnwidth}
+    \begin{itemize}
+      \item During explicit feedback experiment, pit ASR+GMM2 against
+            heuristic, rule-based PED
+      \item GMM2 tuned to segments and labels from pilot phase (no task
+            mismatch)
+    \end{itemize}
+  \end{minipage}
+  %
+  \hfil
+  %
+  \begin{minipage}{0.05\columnwidth}
+    \centering
+    \begin{tabular}{| r || c |}
+      \hline
+      PED         & $\kappa$ \\
+      \hline \hline
+      GMM2        & .19 \\ \hline
+      Heuristic   & \textbf{.34} \\ \hline
+    \end{tabular}
+  \end{minipage}
+  %
+  \begin{itemize}
+    \item On rejected utterances, heuristic picks ``hardest'' word to
+          pronounce, round-robins mispronounced word on successive rejections
+    \item Heuristic beats GMM2 in $\kappa \to$ \textbf{better results when mic
+          is turned off!}
+    \item Possible reasons:
+          %
+          \begin{itemize}
+            \item Non-native ASR difficult w/ little training data $\to$ bad
+                  alignments
+            \item Context effects: expert focuses on one word at a time,
+                  severity of mispronunciation, learner's motivation, etc.
+          \end{itemize}
+    \item Task easier than it \textit{should} be since teacher provides
+          transcription
+    \item \textbf{Need approach robust to misrecognized words, poor alignments,
+          and dialouge effects!}
+  \end{itemize}
+}
+
+\end{columns}
+\end{document}
