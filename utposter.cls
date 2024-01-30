@@ -138,7 +138,7 @@
   \colorlet{innerblockbgcolor}{white}
   % Notes. Again, kinda ugly.
   \colorlet{notefgcolor}{black}
-  \colorlet{notebgcolor}{white}
+  \colorlet{notebgcolor}{SecondaryOne}
   \colorlet{noteframecolor}{Primary}
   % My special use color for gradients
   \colorlet{gradcolor}{AccentThree}
@@ -176,7 +176,7 @@
   \colorlet{innerblockbgcolor}{Primary}
   % Notes. Again, kinda ugly.
   \colorlet{notefgcolor}{UofTText}
-  \colorlet{notebgcolor}{white}
+  \colorlet{notebgcolor}{SecondaryOne}
   \colorlet{noteframecolor}{Primary}
   % My special use color for gradients
   \colorlet{gradcolor}{white}
